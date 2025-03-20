@@ -1,4 +1,4 @@
-import { User, USERS } from "@/db/dummy";
+import { User } from "@/db/dummy";
 import { ScrollArea } from "./ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -20,8 +20,14 @@ const Sidebar = ({ isCollapsed, users }: SidebarProps) => {
 	const [playClickSound] = useSound("/sounds/mouse-click.mp3");
 	const { soundEnabled } = usePreferences();
 	const { setSelectedUser, selectedUser } = useSelectedUser();
-
 	const { user } = useKindeBrowserClient();
+
+	const handleUserSelect = (user: User) => {
+		if (soundEnabled) {
+			playClickSound();
+		}
+		setSelectedUser(user);
+	};
 
 	return (
 		<div className='group relative flex flex-col h-full gap-4 p-2 data-[collapsed=true]:p-2  max-h-full overflow-auto bg-background'>
@@ -39,12 +45,7 @@ const Sidebar = ({ isCollapsed, users }: SidebarProps) => {
 						<TooltipProvider key={idx}>
 							<Tooltip delayDuration={0}>
 								<TooltipTrigger asChild>
-									<div
-										onClick={() => {
-											soundEnabled && playClickSound();
-											setSelectedUser(user);
-										}}
-									>
+									<div onClick={() => handleUserSelect(user)}>
 										<Avatar className='my-1 flex justify-center items-center'>
 											<AvatarImage
 												src={user.image || "/user-placeholder.png"}
@@ -71,10 +72,7 @@ const Sidebar = ({ isCollapsed, users }: SidebarProps) => {
 								selectedUser?.email === user.email &&
 									"dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white shrink"
 							)}
-							onClick={() => {
-								soundEnabled && playClickSound();
-								setSelectedUser(user);
-							}}
+							onClick={() => handleUserSelect(user)}
 						>
 							<Avatar className='flex justify-center items-center'>
 								<AvatarImage

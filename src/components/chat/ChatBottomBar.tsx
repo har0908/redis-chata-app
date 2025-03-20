@@ -38,7 +38,9 @@ const ChatBottomBar = () => {
 
 	const playRandomKeyStrokeSound = () => {
 		const randomIndex = Math.floor(Math.random() * playSoundFunctions.length);
-		soundEnabled && playSoundFunctions[randomIndex]();
+		if (soundEnabled) {
+			playSoundFunctions[randomIndex]();
+		}
 	};
 
 	const { mutate: sendMessage, isPending } = useMutation({
@@ -48,7 +50,9 @@ const ChatBottomBar = () => {
 	const handleSendMessage = () => {
 		if (!message.trim()) return;
 
-		sendMessage({ content: message, messageType: "text", receiverId: selectedUser?.id! });
+		if (selectedUser?.id) {
+			sendMessage({ content: message, messageType: "text", receiverId: selectedUser.id });
+		}
 		setMessage("");
 
 		textAreaRef.current?.focus();
@@ -96,7 +100,6 @@ const ChatBottomBar = () => {
 					signatureEndpoint={"/api/sign-cloudinary-params"}
 					onSuccess={(result, { widget }) => {
 						setImgUrl((result.info as CloudinaryUploadWidgetInfo).secure_url);
-						console.log(`Image URL:${imgUrl}`)
 						widget.close();
 					}}
 				>
@@ -125,8 +128,9 @@ const ChatBottomBar = () => {
 						<Button
 							type='submit'
 							onClick={() => {
-								sendMessage({ content: imgUrl, messageType: "image", receiverId: selectedUser?.id! });
-								console.log(`Image URL:${imgUrl}`)
+								if (selectedUser?.id) {
+									sendMessage({ content: imgUrl, messageType: "image", receiverId: selectedUser.id });
+								}
 								setImgUrl("");
 							}}
 						>
@@ -198,7 +202,9 @@ const ChatBottomBar = () => {
 								size={20}
 								className='text-muted-foreground'
 								onClick={() => {
-									sendMessage({ content: "👍", messageType: "text", receiverId: selectedUser?.id! });
+									if (selectedUser?.id) {
+										sendMessage({ content: "👍", messageType: "text", receiverId: selectedUser.id });
+									}
 								}}
 							/>
 						)}

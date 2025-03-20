@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMessages } from "@/actions/message.actions";
 import { useEffect, useRef } from "react";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
+import Image from "next/image";
 
 const MessageList = () => {
 	const { selectedUser } = useSelectedUser();
@@ -72,9 +73,11 @@ const MessageList = () => {
 								{message.messageType === "text" ? (
 									<span className='bg-accent p-3 rounded-md max-w-xs'>{message.content}</span>
 								) : (
-									<img
+									<Image
 										src={message.content}
 										alt='Message Image'
+										width={400}
+										height={300}
 										className='border p-2 rounded h-40 md:h-52 object-cover'
 									/>
 								)}
